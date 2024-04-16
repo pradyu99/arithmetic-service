@@ -1,0 +1,35 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: arithmetic-service
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: arithmetic-service
+  template:
+    metadata:
+      labels:
+        app: arithmetic-service
+    spec:
+      containers: 
+      - name: arithmetic-service
+        image: arithmetic-service:1
+        imagePullPolicy: IfNotPresent # or Always, depending on your setup
+        env:
+        - name: PORT
+          value: "3000" # Change to match the port your Express app listens on
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: arithmetic-service
+spec:
+  selector:
+    app: arithmetic-service
+  type: NodePort
+  ports:
+    - protocol: TCP
+      port: 3000
+      targetPort: 3000 # Change to match the port your Express app listens on
+      nodePort: 30000
